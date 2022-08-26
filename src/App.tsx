@@ -1,5 +1,6 @@
-import { MantineProvider, Group } from '@mantine/core';
-import Counter from "./Counter.tsx"
+import { MantineProvider, Group, Container, Center } from '@mantine/core';
+import Counter from "./Counter"
+import Timer from "./Timer"
 
 export default function App() {
   return (
@@ -14,6 +15,13 @@ export default function App() {
 
 
       </Group>
+
+      <Center>
+        <Group className='group'>
+        <Timer id={'timer'} className="group"></Timer>
+
+        </Group>
+      </Center>
 
     </MantineProvider>
   );

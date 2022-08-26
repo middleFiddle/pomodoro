@@ -14,11 +14,11 @@ const Counter = ({ duration, id, className }) => {
 
     return (
         <Stack>
-            <Title order={1}>{`${id[0].toUpperCase()}${id.slice(1)} Length`}</Title>
+            <Title id={`${id}-label`} order={1}>{`${id[0].toUpperCase()}${id.slice(1)} Length`}</Title>
             <Group>
                 <Button id={`${id}-increment`} onClick={increment} className={className}>+</Button>
 
-                <Container>
+                <Container id={`${id}-length`}>
                     {display}
                 </Container>
                 <Button id={`${id}-decrement`} onClick={decrement} className={className}>-</Button>
