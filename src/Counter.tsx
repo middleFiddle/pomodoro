@@ -1,34 +1,45 @@
 import { Button, Container, Group, Title, Stack } from "@mantine/core"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-const Counter = ({ duration, id, className }) => {
+const Counter = ({ duration, id, className, setDuration }) => {
     const [display, setDisplay] = useState(duration)
+
+    useEffect(() => {
+      setDisplay(duration)
+    
+      return () => {
+        
+      }
+    }, [duration])
+    
 
 
     const increment = () => {
-        setDisplay(p => p + 1)
+        setDuration(p => p + 1)
+      
     }
 
     const decrement = () => {
         if (display > 0) {
-            setDisplay(p => p - 1)
+            setDuration(p => p - 1)
+            
         }
     }
 
     return (
-        <Stack>
-            <Title id={`${id}-label`} order={1}>{`${id[0].toUpperCase()}${id.slice(1)} Length`}</Title>
-            <Group>
-                <Button id={`${id}-increment`} onClick={increment} className={className}>+</Button>
-
-                <Container id={`${id}-length`}>
+        <>
+            <h1 id={`${id}-label`}>{`${id[0].toUpperCase()}${id.slice(1)} Length`}</h1>
+            <>
+                
+            <button id={`${id}-decrement`} onClick={decrement} className={className}>-</button>
+                <div id={`${id}-length`}>
                     {display}
-                </Container>
-                <Button id={`${id}-decrement`} onClick={decrement} className={className}>-</Button>
-            </Group>
+                </div>
+                <button id={`${id}-increment`} onClick={increment} className={className}>+</button>
+            </>
 
 
-        </Stack>
+        </>
     )
 }
 

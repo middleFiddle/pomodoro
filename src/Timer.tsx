@@ -4,12 +4,6 @@ import { MenuTarget } from '@mantine/core/lib/Menu/MenuTarget/MenuTarget';
 
 
 
-// EVERYTHING WOULD BE SIMPLER IF WE DEAL ONLY WITH MILLISECONDS, EXCEPT FOR THE VIEW
-
-//  INIITAL_MILLIS: NUMBER
-//  ON START: DECREMENT THE NUMBER
-//  WRITE A CONVERSION FROM MILLIS TO `MM:SS`
-//  THAT'S IT REALLY
 
 type Format = (i: number) => string
 
@@ -27,10 +21,25 @@ const converter: Converter = (millis) => {
 }
 
 
-export default function Timer({id, className, brake, setBrake}) {
-    const [future, setFuture] = useState(1500000) 
+export default function Timer({id, className, breakDur, sessionDur, setSessionDur, setBreakDur}) {
+    const [future, setFuture] = useState(sessionDur*60000) 
     const [paused, setPaused] = useState(true)
     const [intId, setIntId] = useState(undefined)
+    const [brake, setBrake] = useState(false)
+
+    useEffect(() => {
+      if (brake) {
+        setFuture(breakDur*60000)
+      }
+
+      if(!brake) {
+        setFuture(sessionDur*60000)
+      }
+    
+      return () => {
+        
+      }
+    }, [breakDur, sessionDur, brake])
     
 
 
@@ -46,37 +55,47 @@ export default function Timer({id, className, brake, setBrake}) {
         setPaused(prev => !prev)       
     }
 
+    const onReset = () => {
+        if(!paused){
+            onStart()
+        }
+        setBreakDur(5)
+        setSessionDur(25)
+        brake ? setFuture(breakDur*60000) : setFuture(sessionDur*60000)
+    }
+
     const boundary = (left:number): number => {
-        if (left === 0) {
+        if (left <= 0) {
             if (brake) {
                 setBrake(prev => !prev)
-                setFuture(1500000)
-                return
+                setFuture(sessionDur*60000)
+                return 
             }
             setBrake(prev => !prev)
-            setFuture(300000)
+            setFuture(breakDur*60000)
+
         }
-        return future 
+        return future
     } 
 
 
 return (
-    <Stack>
-    <Title id={`${id}-label`} order={1}>{`${id[0].toUpperCase()}${id.slice(1)} Length`}</Title>
-    <Group>
-        <Button id={`start_stop`} onClick={onStart} className={className}>
+    
+    <>
+        <button id={`start_stop`} onClick={onStart} className={className}>
             {paused ? 'Start' : 'Stop'}
-        </Button>
-
-        <Container id="time-left">
+        </button>
+        <div className="display">
+        <h3 id="timer-label">{brake ? "Take a Break" : "Keep Up!"}</h3>
+        <div id="time-left">
             {converter(boundary(future))}
-        </Container>
-        <Button id={`reset`} className={className}>Reset</Button>
-    </Group>
-    <Center>
-        <Button className={className}></Button>
-    </Center>
+        </div>
 
-</Stack>
+        </div>
+        <button id={`reset`} onClick={onReset} className={className}>Reset</button>
+    </>
+
+
+
 )
 }

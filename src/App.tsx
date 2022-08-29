@@ -1,36 +1,40 @@
-import { MantineProvider, Group, Container, Center } from '@mantine/core';
+
 import { useState } from 'react';
 import Counter from "./Counter"
 import Timer from "./Timer"
 
 export default function App() {
-    const [brake, setBrake] = useState(false)
+  const [breakDur, setBreakDur] = useState(5)  
+  const [sessionDur, setSessionDur] = useState(25)
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <>
 
 
-      <Group className="group">
+      <div className="group">
 
-        <Counter duration={5} id={'break'} className="group" />
-        <Counter duration={25} id={'session'} className="group" />
+        <Counter  duration={breakDur} setDuration={setBreakDur} id={'break'} className="group" />
+        <Counter  duration={sessionDur} setDuration={setSessionDur} id={'session'} className="group" />
 
 
 
-      </Group>
+      </div>
 
-      <Center>
-        <Group className='group'>
+      <div>
+        <div className='group'>
         <Timer 
-          brake={brake}
-          setBrake={setBrake}
           id={'timer'} 
-          className="group" />  
+          className="timer" 
+          breakDur={breakDur}
+          sessionDur={sessionDur}
+          setBreakDur={setBreakDur}
+          setSessionDur={setSessionDur}
+        />  
       
 
-        </Group>
-      </Center>
+        </div>
+      </div>
 
-    </MantineProvider>
+    </>
   );
 }
