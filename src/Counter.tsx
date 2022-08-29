@@ -4,12 +4,15 @@ import { useState } from "react"
 const Counter = ({ duration, id, className }) => {
     const [display, setDisplay] = useState(duration)
 
+
     const increment = () => {
         setDisplay(p => p + 1)
     }
 
     const decrement = () => {
-        setDisplay(p => p - 1)
+        if (display > 0) {
+            setDisplay(p => p - 1)
+        }
     }
 
     return (

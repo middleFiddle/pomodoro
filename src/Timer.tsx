@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Title, Group, Button, Container, Center} from "@mantine/core"
+import { Stack, Title, Group, Button, Container, Center, getSortedBreakpoints} from "@mantine/core"
 import { MenuTarget } from '@mantine/core/lib/Menu/MenuTarget/MenuTarget';
 
 
@@ -11,31 +11,53 @@ import { MenuTarget } from '@mantine/core/lib/Menu/MenuTarget/MenuTarget';
 //  WRITE A CONVERSION FROM MILLIS TO `MM:SS`
 //  THAT'S IT REALLY
 
+type Format = (i: number) => string
 
-
-export default function Timer({id, className}) {
-    const [future, setFuture] = useState(1500000)  // setFuture will handle resets and initializing "break" and "session" states
-    const [paused, setPaused] = useState(true)
-    const [reset, setReset] = useState(true)
-    const [intId, setIntId] = useState(undefined)
-
-
-const onStart = () => {
-    if (intId) {
-        clearInterval(intId)
-    }
-    
-    setReset(false)
-    
-    if (paused) {
-        const id= setInterval(() => setFuture(prev => prev -1), 1000)
-        setIntId(id)
-    }
-
-    setPaused(prev => !prev)       
-    
+const format: Format = (i) => {
+    return i < 10 ? `0${i}` : `${i}`
 }
 
+type Converter = (millis: number) => string 
+
+const converter: Converter = (millis) => {
+    const minutes = Math.floor(millis/60000)
+    const seconds = millis%60000/1000
+    const [_minutes, _seconds] = [format(minutes), format(seconds)]
+    return `${_minutes}:${_seconds}`
+}
+
+
+export default function Timer({id, className, brake, setBrake}) {
+    const [future, setFuture] = useState(1500000) 
+    const [paused, setPaused] = useState(true)
+    const [intId, setIntId] = useState(undefined)
+    
+
+
+    const onStart = () => {
+        if (intId) {
+            clearInterval(intId)
+        }
+   
+        if (paused) {
+            const id= setInterval(() => setFuture(prev => prev -1000), 1)
+            setIntId(id)
+        }
+        setPaused(prev => !prev)       
+    }
+
+    const boundary = (left:number): number => {
+        if (left === 0) {
+            if (brake) {
+                setBrake(prev => !prev)
+                setFuture(1500000)
+                return
+            }
+            setBrake(prev => !prev)
+            setFuture(300000)
+        }
+        return future 
+    } 
 
 
 return (
@@ -47,7 +69,7 @@ return (
         </Button>
 
         <Container id="time-left">
-            {future}
+            {converter(boundary(future))}
         </Container>
         <Button id={`reset`} className={className}>Reset</Button>
     </Group>

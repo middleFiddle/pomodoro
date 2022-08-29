@@ -1,8 +1,11 @@
 import { MantineProvider, Group, Container, Center } from '@mantine/core';
+import { useState } from 'react';
 import Counter from "./Counter"
 import Timer from "./Timer"
 
 export default function App() {
+    const [brake, setBrake] = useState(false)
+
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
 
@@ -18,7 +21,12 @@ export default function App() {
 
       <Center>
         <Group className='group'>
-        <Timer id={'timer'} className="group"></Timer>
+        <Timer 
+          brake={brake}
+          setBrake={setBrake}
+          id={'timer'} 
+          className="group" />  
+      
 
         </Group>
       </Center>
